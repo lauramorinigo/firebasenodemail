@@ -1,0 +1,19 @@
+{
+  "name": "fnode",
+  "version": "1.0.0",
+  "description": "Firebase  + node init",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "escape-html": "^1.0.3",
+    "firebase": "^3.6.2",
+    "firebase-admin": "^4.0.3",
+    "node-schedule": "^1.2.0",
+    "nodemailer": "^2.6.4",
+    "promise": "^7.1.1"
+  }
+}
