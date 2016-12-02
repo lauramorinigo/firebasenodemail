@@ -1,24 +1,45 @@
 'use strict';
 
 var firebase = require('firebase-admin');
-var serviceAccount = require("serviceKey.json");
+var serviceAccount = require("FNodeServer-ee6bfb1b1481.json");
+
 
 var nodemailer = require('nodemailer');
 var schedule   = require('node-schedule');
 var Promise    = require('promise');
 var escape     = require('escape-html');
 
-var mailTransport = nodemailer.createTransport('smtps://<user>%40gmail.com:<pass>/@smtp.gmail.com');
+var express = require("express");
+
+var app = express();
+
+app.use(express.static(__dirname ));
+
+firebase.database.enableLogging(true);
+
+
+var mailTransport = nodemailer.createTransport('smtps://<USER>%40gmail.com:<PASS>*//@smtp.gmail.com');
 
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
-  databaseURL:"https://URL.firebaseio.com"
+  databaseURL:"https://URL.firebaseio.com/"
 })
+
+
+
+
+
+
+app.get("index", function(req, res){
+  res.sendFile('index.html');  // Start the server.
+
+});
 
 
 
 // [START single_value_read]
 function sendNotificationToUser(uid, postId) {
+  console.log('pepe');
   // Fetch the user's email.
   var userRef = firebase.database().ref('/users/' + uid);
   userRef.once('value').then(function(snapshot) {
@@ -50,6 +71,7 @@ function sendNotificationToUser(uid, postId) {
  * Send the new star notification email to the given email.
  */
 function sendNotificationEmail(email) {
+
   var mailOptions = {
     from: '"Firebase Database Quickstart" <noreply@firebase.com>',
     to: email,
@@ -66,6 +88,7 @@ function sendNotificationEmail(email) {
  */
 // [START post_stars_transaction]
 function updateStarCount(postRef) {
+
   postRef.transaction(function(post) {
     if (post) {
       post.starCount = post.stars ? Object.keys(post.stars).length : 0;
@@ -79,13 +102,16 @@ function updateStarCount(postRef) {
  * Keep the likes count updated and send email notifications for new likes.
  */
 function startListeners() {
+
   firebase.database().ref('/posts').on('child_added', function(postSnapshot) {
     var postReference = postSnapshot.ref;
     var uid = postSnapshot.val().uid;
     var postId = postSnapshot.key;
+    console.log('si si');
     // Update the star count.
     // [START post_value_event_listener]
     postReference.child('stars').on('value', function(dataSnapshot) {
+
       updateStarCount(postReference);
       // [START_EXCLUDE]
       updateStarCount(firebase.database().ref('user-posts/' + uid + '/' + postId));
@@ -170,6 +196,10 @@ function createWeeklyTopPostsEmailHtml(topPosts) {
   return emailHtml;
 }
 
-// Start the server.
+
 startListeners();
 startWeeklyTopPostEmailer();
+
+app.listen(8081, function () {
+    console.log('listening on port 8081' );
+});

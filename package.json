@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "escape-html": "^1.0.3",
+    "express": "^4.14.0",
     "firebase": "^3.6.2",
     "firebase-admin": "^4.0.3",
     "node-schedule": "^1.2.0",
