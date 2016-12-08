@@ -9,7 +9,7 @@ Steps to integrate your app besides quickstart nodejs tutorial:
 
   + Download your json service account into your node modules directory file to call it later with require(PATH/JSON)
   + The service account that you create to generate the json file and initialize firebase should have rol editor: 
-        1-Go to your project firebase console/configuration/permissions/IAM
+  ++Go to your project firebase console/configuration/permissions/IAM
   + To receive and send emails succesfully you should change some permissions in your google account 
 
 
