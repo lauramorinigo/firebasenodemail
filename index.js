@@ -1,7 +1,7 @@
 'use strict';
 
 var firebase = require('firebase-admin');
-var serviceAccount = require("FNodeServer-ee6bfb1b1481.json");
+var serviceAccount = require("FNodeServer-9b30bc0701e4.json");
 
 
 var nodemailer = require('nodemailer');
@@ -15,31 +15,38 @@ var app = express();
 
 app.use(express.static(__dirname ));
 
-firebase.database.enableLogging(true);
+/*In case you want to have the logs via firebase*/
+
+//firebase.database.enableLogging(true);
 
 
-var mailTransport = nodemailer.createTransport('smtps://<USER>%40gmail.com:<PASS>*//@smtp.gmail.com');
+//In case you have special chars try this structure
+
+ var mailTransport = nodemailer.createTransport( {
+    host: "smtp.gmail.com", // hostname
+    secureConnection: true, // use SSL
+    port: 465, // port for secure SMTP
+    auth: {
+        user: "user@gmail.com",
+        pass: "pass"
+    }
+});
 
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
-  databaseURL:"https://URL.firebaseio.com/"
+  databaseURL:"https://URL.firebaseio.com"
 })
-
-
-
-
 
 
 app.get("index", function(req, res){
   res.sendFile('index.html');  // Start the server.
-
 });
 
 
 
 // [START single_value_read]
 function sendNotificationToUser(uid, postId) {
-  console.log('pepe');
+
   // Fetch the user's email.
   var userRef = firebase.database().ref('/users/' + uid);
   userRef.once('value').then(function(snapshot) {
@@ -47,6 +54,7 @@ function sendNotificationToUser(uid, postId) {
     // Send the email to the user.
     // [START_EXCLUDE]
     if (email) {
+      console.log('entra al mail');
       sendNotificationEmail(email).then(function() {
         // Save the date at which we sent that notification.
         // [START write_fan_out]
@@ -80,7 +88,7 @@ function sendNotificationEmail(email) {
   };
   return mailTransport.sendMail(mailOptions).then(function() {
     console.log('New star email notification sent to: ' + email);
-  });
+  }
 }
 
 /**
@@ -196,10 +204,11 @@ function createWeeklyTopPostsEmailHtml(topPosts) {
   return emailHtml;
 }
 
-
 startListeners();
 startWeeklyTopPostEmailer();
 
+
 app.listen(8081, function () {
     console.log('listening on port 8081' );
+
 });
