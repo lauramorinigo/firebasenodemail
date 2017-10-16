@@ -21,7 +21,6 @@ app.use(express.static(__dirname ));
 
 
 //In case you have special chars try this structure
-
  var mailTransport = nodemailer.createTransport( {
     host: "smtp.gmail.com", // hostname
     secureConnection: true, // use SSL
@@ -32,9 +31,12 @@ app.use(express.static(__dirname ));
     }
 });
 
+
+
+
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
-  databaseURL:"https://URL.firebaseio.com"
+  databaseURL:"https://fnodeserver.firebaseio.com"
 })
 
 
@@ -88,7 +90,7 @@ function sendNotificationEmail(email) {
   };
   return mailTransport.sendMail(mailOptions).then(function() {
     console.log('New star email notification sent to: ' + email);
-  }
+  })
 }
 
 /**
